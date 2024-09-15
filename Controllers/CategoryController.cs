@@ -19,9 +19,22 @@ namespace MVCProject.Controllers
             return View(categories);
         }
 
+
+        [HttpGet]
         public IActionResult Create()
         {
             return View();
+        }
+        [HttpPost]
+        public IActionResult Create(Category obj)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Categories.Add(obj);
+                _context.SaveChanges();
+            }
+
+            return RedirectToAction("Index", "Category");
         }
     }
 }
