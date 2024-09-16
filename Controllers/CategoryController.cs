@@ -25,16 +25,22 @@ namespace MVCProject.Controllers
         {
             return View();
         }
+
         [HttpPost]
         public IActionResult Create(Category obj)
         {
+            if (obj.Name == obj.DisplayOrder.ToString())
+            {
+                ModelState.AddModelError("Name", "the Display Order Cannot exactly match the name");
+            }
             if (ModelState.IsValid)
             {
                 _context.Categories.Add(obj);
                 _context.SaveChanges();
+                return RedirectToAction("Index", "Category");
             }
-
-            return RedirectToAction("Index", "Category");
+            return View(obj);
+            
         }
     }
 }
