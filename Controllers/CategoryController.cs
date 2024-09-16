@@ -99,7 +99,7 @@ namespace MVCProject.Controllers
             
             _context.Categories.Remove(category);
             _context.SaveChanges();
-            TempData["success"] = "Category Deleted Successfully";
+            TempData["error"] = "Category Deleted Successfully";
             return RedirectToAction("Index", "Category");
             
 
