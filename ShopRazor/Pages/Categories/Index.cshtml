@@ -1,0 +1,53 @@
+﻿@page
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using ShopRazor.Models
+@model ShopRazor.Pages.Categories.IndexModel
+
+
+
+<div class="container">
+    <div class="row pt-4 pb-3">
+        <div class="col-9">
+            <h2 class="text-primary">Category List</h2>
+        </div>
+        <div class="col-3 text-end">
+            <a asp-page="/categories/create" class="btn btn-primary">
+                Create New Category <i class="bi bi-plus-circle"></i>
+            </a>
+        </div>
+    </div>
+    
+
+
+    <table class="table table-bordered table-striped">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Display Order</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (Category category in Model.Categories.OrderBy(u => u.DisplayOrder))
+        {
+            <tr>
+                <td>@category.Name</td>
+                <td>@category.DisplayOrder</td>
+                <td>
+                    <div class="w-75 btn-group" role="group">
+                        <a asp-page="/categories/edit" asp-route-id="@category.Id" class="btn btn-primary mx-2">
+                            <i class="bi bi-pencil-square"></i> Edit
+                        </a>
+                        <a asp-page="/categories/delete" asp-route-id="@category.Id" class="btn btn-danger mx-2">
+                            <i class="bi bi-trash"></i> Delete
+                        </a>
+                    </div>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+
+</div>
+
+
