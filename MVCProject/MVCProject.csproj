@@ -17,11 +17,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <UpToDateCheckInput Remove="Views\Category\Edit.cshtml" />
+    <UpToDateCheckInput Remove="Areas\Admin\Views\Category\Edit.cshtml" />
   </ItemGroup>
 
   <ItemGroup>
-    <_ContentIncludedByDefault Remove="Views\Category\Edit.cshtml" />
+    <_ContentIncludedByDefault Remove="Areas\Admin\Views\Category\Edit.cshtml" />
   </ItemGroup>
 
   <ItemGroup>

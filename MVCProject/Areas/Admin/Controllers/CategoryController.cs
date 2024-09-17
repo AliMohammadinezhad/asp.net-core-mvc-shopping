@@ -2,8 +2,9 @@
 using ShopProject.DataAccess.Data.Repository.IRepository;
 using ShopProject.Models;
 
-namespace MVCProject.Controllers
+namespace MVCProject.Areas.Admin.Controllers
 {
+    [Area("Admin")]
     public class CategoryController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
