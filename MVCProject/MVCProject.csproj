@@ -24,4 +24,9 @@
     <_ContentIncludedByDefault Remove="Views\Category\Edit.cshtml" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ShopProject.DataAccess\ShopProject.DataAccess.csproj" />
+    <ProjectReference Include="..\ShopProject.Models\ShopProject.Models.csproj" />
+  </ItemGroup>
+
 </Project>
