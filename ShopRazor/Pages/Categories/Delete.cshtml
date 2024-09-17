@@ -1,0 +1,32 @@
+﻿@page
+@model ShopRazor.Pages.Categories.DeleteModel
+
+<form method="post">
+    <input asp-for="Category.Id" hidden="hidden"/>
+    <div class="border p-3 mt-4">
+        <div class="row pb-2">
+            <h2 class="text-primary">Delete Category</h2>
+            <hr/>
+        </div>
+        <div class="mb-3 row p-1">
+            <label asp-for="Category.Name" class="p-0"></label>
+            <input asp-for="Category.Name" disabled="disabled" class="form-control"/>
+        </div>
+        <div class="mb-3 row p-1">
+            <label asp-for="Category.DisplayOrder" class="p-0"></label>
+            <input asp-for="Category.DisplayOrder" disabled="disabled" class="form-control"/>
+        </div>
+        <div class="row">
+            <div class="col-6 col-md-3">
+                <button type="submit" class="btn btn-danger form-control">Delete</button>
+            </div>
+            <div class="col-6 col-md-3">
+                <a asp-page="/categories/index" class="btn btn-outline-secondary border form-control">Back to List</a>
+
+            </div>
+        </div>
+
+    </div>
+</form>
+
+
