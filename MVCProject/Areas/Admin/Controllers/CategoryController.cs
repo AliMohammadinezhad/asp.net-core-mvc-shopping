@@ -1,21 +1,21 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MVCProject.Data;
-using MVCProject.Models;
+using ShopProject.DataAccess.Data.Repository.IRepository;
+using ShopProject.Models;
 
 namespace MVCProject.Controllers
 {
     public class CategoryController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public CategoryController(ApplicationDbContext context)
+        public CategoryController(IUnitOfWork unitOfWork)
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
         }
 
         public IActionResult Index()
         {
-            List<Category> categories = _context.Categories.ToList();
+            List<Category> categories = _unitOfWork.Category.GetAll().ToList();
             return View(categories);
         }
 
@@ -35,8 +35,8 @@ namespace MVCProject.Controllers
             }
             if (ModelState.IsValid)
             {
-                _context.Categories.Add(obj);
-                _context.SaveChanges();
+                _unitOfWork.Category.Add(obj);
+                _unitOfWork.Save();
                 TempData["success"] = "Category Created Successfully";
                 return RedirectToAction("Index", "Category");
             }
@@ -50,7 +50,7 @@ namespace MVCProject.Controllers
             if (id == null || id == 0)
                 return NotFound();
 
-            Category? category = _context.Categories.Find(id);
+            Category? category = _unitOfWork.Category.Get(cat => cat.Id == id);
             if (category == null)
                 return NotFound();
 
@@ -66,8 +66,8 @@ namespace MVCProject.Controllers
             }
             if (ModelState.IsValid)
             {
-                _context.Categories.Update(obj);
-                _context.SaveChanges();
+                _unitOfWork.Category.Update(obj);
+                _unitOfWork.Save();
                 TempData["success"] = "Category Updated Successfully";
                 return RedirectToAction("Index", "Category");
             }
@@ -81,7 +81,7 @@ namespace MVCProject.Controllers
             if (id == null || id == 0)
                 return NotFound();
 
-            Category? category = _context.Categories.Find(id);
+            Category? category = _unitOfWork.Category.Get(cat => cat.Id == id);
             if (category == null)
                 return NotFound();
 
@@ -92,13 +92,13 @@ namespace MVCProject.Controllers
         public IActionResult DeletePOST(int? id)
         {
 
-            Category? category = _context.Categories.Find(id);
+            Category? category = _unitOfWork.Category.Get(cat => cat.Id == id);
             
             if (category == null)
                 return NotFound();
             
-            _context.Categories.Remove(category);
-            _context.SaveChanges();
+            _unitOfWork.Category.Remove(category);
+            _unitOfWork.Save();
             TempData["error"] = "Category Deleted Successfully";
             return RedirectToAction("Index", "Category");
             
