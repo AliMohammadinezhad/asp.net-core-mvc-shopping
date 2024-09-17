@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace ShopRazor.Models;
+namespace ShopProject.Models;
 
 public class Category
 {

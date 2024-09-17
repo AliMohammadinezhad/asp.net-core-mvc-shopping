@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ShopRazor.Models;
+using ShopProject.Models;
 
-namespace ShopRazor.Data;
+namespace ShopProject.DataAccess;
 
 public class ApplicationDbContext : DbContext
 {
