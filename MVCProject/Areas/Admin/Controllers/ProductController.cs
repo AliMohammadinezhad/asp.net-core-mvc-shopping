@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using ShopProject.DataAccess.Data.Repository.IRepository;
 using ShopProject.Models;
 
@@ -17,6 +18,7 @@ namespace MVCProject.Areas.Admin.Controllers
         public IActionResult Index()
         {
             List<Product> products = _unitOfWork.Product.GetAll().ToList();
+            
             return View(products);
         }
 
@@ -47,6 +49,13 @@ namespace MVCProject.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult Create()
         {
+            IEnumerable<SelectListItem> categoryListItems = _unitOfWork.Category.GetAll()
+                .Select(u => new SelectListItem
+                {
+                    Text = u.Name,
+                    Value = u.Id.ToString()
+                });
+            ViewBag.CategoryList = categoryListItems;
             return View();
         }
 

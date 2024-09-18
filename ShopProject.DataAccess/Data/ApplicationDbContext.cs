@@ -34,7 +34,8 @@ public class ApplicationDbContext : DbContext
                 Price = 90,
                 Price100 = 70,
                 Price50 = 80,
-                CategoryId = 1
+                CategoryId = 1,
+                ImageUrl = ""
             },
         new Product
         {
@@ -47,7 +48,8 @@ public class ApplicationDbContext : DbContext
             Price = 190,
             Price100 = 170,
             Price50 = 180,
-            CategoryId = 2
+            CategoryId = 2,
+            ImageUrl = ""
         },
             new Product
             {
@@ -60,7 +62,8 @@ public class ApplicationDbContext : DbContext
                 Price = 70,
                 Price100 = 50,
                 Price50 = 60,
-                CategoryId = 3
+                CategoryId = 3,
+                ImageUrl = ""
             });
     }
 }

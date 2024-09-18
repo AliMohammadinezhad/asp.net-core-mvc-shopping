@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ShopProject.DataAccess.Data;
 
@@ -10,9 +11,11 @@ using ShopProject.DataAccess.Data;
 namespace ShopProject.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240918141948_AddImageUrlToProduct")]
+    partial class AddImageUrlToProduct
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -86,7 +89,6 @@ namespace ShopProject.DataAccess.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ImageUrl")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("ListPrice")
@@ -119,7 +121,6 @@ namespace ShopProject.DataAccess.Migrations
                             CategoryId = 1,
                             Description = "Book for programming",
                             ISBN = "123489109123",
-                            ImageUrl = "",
                             ListPrice = 103.0,
                             Price = 90.0,
                             Price100 = 70.0,
@@ -133,7 +134,6 @@ namespace ShopProject.DataAccess.Migrations
                             CategoryId = 2,
                             Description = "C# World",
                             ISBN = "1234BN9109123",
-                            ImageUrl = "",
                             ListPrice = 140.0,
                             Price = 190.0,
                             Price100 = 170.0,
@@ -147,7 +147,6 @@ namespace ShopProject.DataAccess.Migrations
                             CategoryId = 3,
                             Description = ".NET in real world",
                             ISBN = "1234DF23G3",
-                            ImageUrl = "",
                             ListPrice = 303.0,
                             Price = 70.0,
                             Price100 = 50.0,
