@@ -1,0 +1,46 @@
+﻿@model List<Product>
+
+<div class="container">
+    <div class="row pt-4 pb-3">
+        <div class="col-9">
+            <h2 class="text-primary">Product List</h2>
+        </div>
+        <div class="col-3 text-end">
+            <a asp-area="Admin" asp-controller="Product" asp-action="Create" class="btn btn-primary">
+                Create New Product <i class="bi bi-plus-circle"></i>
+            </a>
+        </div>
+    </div>
+    <table class="table table-bordered table-hover table-striped">
+        <thead>
+        <tr>
+            <th>Title</th>
+            <th>ISBN</th>
+            <th>Price</th>
+            <th>Author</th>
+            <th>Category</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (Product product in Model)
+        {
+            <tr>
+                <td>@product.Title</td>
+                <td>@product.ISBN</td>
+                <td>@product.Price</td>
+                <td>@product.Author</td>
+                <td>asdfasdf</td>
+                <td>
+                    <a asp-area="Admin" asp-controller="Product" asp-action="Edit" asp-route-id="@product.Id" class="btn btn-primary mx-2">
+                        <i class="bi bi-pencil-square"></i> Edit
+                    </a>
+                    <a asp-area="Admin" asp-controller="Product" asp-action="Delete" asp-route-id="@product.Id" class="btn btn-danger mx-2">
+                        <i class="bi bi-trash"></i> Delete
+                    </a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
