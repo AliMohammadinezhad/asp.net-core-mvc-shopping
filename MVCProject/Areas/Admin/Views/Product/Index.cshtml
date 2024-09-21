@@ -6,7 +6,7 @@
             <h2 class="text-primary">Product List</h2>
         </div>
         <div class="col-3 text-end">
-            <a asp-area="Admin" asp-controller="Product" asp-action="Create" class="btn btn-primary">
+            <a asp-area="Admin" asp-controller="Product" asp-action="Upsert" class="btn btn-primary">
                 Create New Product <i class="bi bi-plus-circle"></i>
             </a>
         </div>
@@ -32,7 +32,7 @@
                 <td>@product.Author</td>
                 <td>asdfasdf</td>
                 <td>
-                    <a asp-area="Admin" asp-controller="Product" asp-action="Edit" asp-route-id="@product.Id" class="btn btn-primary mx-2">
+                    <a asp-area="Admin" asp-controller="Product" asp-action="Upsert" asp-route-id="@product.Id" class="btn btn-primary mx-2">
                         <i class="bi bi-pencil-square"></i> Edit
                     </a>
                     <a asp-area="Admin" asp-controller="Product" asp-action="Delete" asp-route-id="@product.Id" class="btn btn-danger mx-2">
