@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using ShopProject.DataAccess.Data.Repository.IRepository;
 using ShopProject.Models;
+using ShopProject.Models.ViewModels;
 
 namespace MVCProject.Areas.Admin.Controllers
 {
@@ -9,10 +10,11 @@ namespace MVCProject.Areas.Admin.Controllers
     public class ProductController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
-
-        public ProductController(IUnitOfWork unitOfWork)
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        public ProductController(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment)
         {
             _unitOfWork = unitOfWork;
+            _webHostEnvironment = webHostEnvironment;
         }
         [HttpGet]
         public IActionResult Index()
@@ -22,53 +24,82 @@ namespace MVCProject.Areas.Admin.Controllers
             return View(products);
         }
 
+
         [HttpGet]
-        public IActionResult Edit(int? id)
+        public IActionResult Upsert(int? id)
         {
+            
+            ProductVM productVm = new()
+            {
+                CategoryList = _unitOfWork.Category.GetAll()
+                    .Select(u => new SelectListItem
+                    {
+                        Text = u.Name,
+                        Value = u.Id.ToString()
+                    }),
+                Product = new Product()
+            };
             if (id == null || id == 0)
-                return NotFound();
+            {
+                //create
+                return View(productVm);
+            }
+            else
+            {
+                //update
+                productVm.Product = _unitOfWork.Product.Get(u => u.Id == id);
+                return View(productVm);
+            }
 
-            Product product = _unitOfWork.Product.Get(p => p.Id == id);
+            
 
-            return View(product);
         }
 
         [HttpPost]
-        public IActionResult Edit(Product product)
+        public IActionResult Upsert(ProductVM obj, IFormFile? file)
         {
             if (ModelState.IsValid)
             {
-                _unitOfWork.Product.Update(product);
-                _unitOfWork.Save();
-                return RedirectToAction("Index");
-            }
-            return View(product);
-
-        }
-
-        [HttpGet]
-        public IActionResult Create()
-        {
-            IEnumerable<SelectListItem> categoryListItems = _unitOfWork.Category.GetAll()
-                .Select(u => new SelectListItem
+                string wwwrootPath = _webHostEnvironment.WebRootPath;
+                if (file != null)
                 {
-                    Text = u.Name,
-                    Value = u.Id.ToString()
-                });
-            ViewBag.CategoryList = categoryListItems;
-            return View();
-        }
+                    string fileName = Guid.NewGuid() + Path.GetExtension(file.FileName);
+                    string productPath = Path.Combine(wwwrootPath, @"images\product");
+                    if (!string.IsNullOrEmpty(obj.Product.ImageUrl))
+                    {
+                        // delete the old image
+                        var oldImagePath = Path.Combine(wwwrootPath, obj.Product.ImageUrl.TrimStart('\\'));
+                        if (System.IO.File.Exists(oldImagePath))
+                            System.IO.File.Delete(oldImagePath);
+                    }
+                    
+                    using (var fileStream = new FileStream(Path.Combine(productPath,fileName), FileMode.Create))
+                    {
+                        file.CopyTo(fileStream);
+                    }
 
-        [HttpPost]
-        public IActionResult Create(Product product)
-        {
-            if (ModelState.IsValid)
-            {
-                _unitOfWork.Product.Add(product);
+                    obj.Product.ImageUrl = @"\images\product\" + fileName;
+                }
+
+                if (obj.Product.Id == 0)
+                {
+                    _unitOfWork.Product.Add(obj.Product);
+                }
+                else
+                {
+                    _unitOfWork.Product.Update(obj.Product);
+                }
+                
                 _unitOfWork.Save();
                 return RedirectToAction("Index");
             }
-            return View(product);
+            else
+            {
+                obj.CategoryList = _unitOfWork.Category.GetAll()
+                    .Select(u => new SelectListItem { Text = u.Name, Value = u.Id.ToString() });
+                return View(obj);
+            }
+            
 
         }
 
