@@ -19,7 +19,7 @@ namespace MVCProject.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            List<Product> products = _unitOfWork.Product.GetAll().ToList();
+            List<Product> products = _unitOfWork.Product.GetAll(includeProperties: "Category").ToList();
             
             return View(products);
         }

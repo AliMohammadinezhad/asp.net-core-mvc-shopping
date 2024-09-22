@@ -30,7 +30,7 @@
                 <td>@product.ISBN</td>
                 <td>@product.Price</td>
                 <td>@product.Author</td>
-                <td>asdfasdf</td>
+                <td>@product.Category.Name</td>
                 <td>
                     <a asp-area="Admin" asp-controller="Product" asp-action="Upsert" asp-route-id="@product.Id" class="btn btn-primary mx-2">
                         <i class="bi bi-pencil-square"></i> Edit
