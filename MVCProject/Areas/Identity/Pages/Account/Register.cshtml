@@ -6,14 +6,7 @@
     <div class="card-header bg-secondary bg-gradient ml-0 py-4">
         <div class="row">
             <div class="col-12 text-center">
-                @if (User.IsInRole(SD.Role_Admin))
-                {
-                    <h2 class="py-2 text-white">Register - ADMIN PORTAL</h2>
-                }
-                else
-                {
                     <h2 class="py-2 text-white">Register</h2>
-                }
             </div>
         </div>
     </div>
@@ -48,8 +41,6 @@
                     </div>
                 </form>
             </div>
-            @if (!User.IsInRole(SD.Role_Admin))
-            {
                 <div class="col-md-12 p-3 text-center">
                     <section>
                         <p class="divider-text d-flex pt-3">or</p>
@@ -82,7 +73,6 @@
                         }
                     </section>
                 </div>
-            }
         </div>
     </div>
 </div>
@@ -91,17 +81,4 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-    <script>
-        $(document).ready(function () {
-            $('#Input_Role').change(function () {
-                var selection = $('#Input_Role Option:Selected').text();
-                if (selection == 'Company') {
-                    $('#Input_CompanyId').show();
-                }
-                else {
-                    $('#Input_CompanyId').hide();
-                }
-            })
-        })
-    </script>
 }
