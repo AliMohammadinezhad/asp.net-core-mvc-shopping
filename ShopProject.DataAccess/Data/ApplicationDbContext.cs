@@ -9,7 +9,6 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
-        
     }
 
     public DbSet<Category> Categories { get; set; }
@@ -28,6 +27,39 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
             new Category { Id = 3, Name = "History", DisplayOrder = 3 }
         );
 
+        modelBuilder.Entity<Company>().HasData(
+            new Company
+            {
+                Id = 1,
+                Name = "Tech Solution",
+                StreetAddress = "123 Tech St",
+                City = "Tech City",
+                PostalCode = "123123",
+                PhoneNumber = "66669999000",
+                State = "IL"
+            },
+            new Company
+            {
+                Id = 2,
+                Name = "Vivid Books",
+                StreetAddress = "123 Vid St",
+                City = "Vid City",
+                PostalCode = "432432",
+                PhoneNumber = "77766444222",
+                State = "IL"
+            },
+            new Company
+            {
+                Id = 3,
+                Name = "Readers Club",
+                StreetAddress = "99 Main St",
+                City = "Lala Land",
+                PostalCode = "99999",
+                PhoneNumber = "33349999780",
+                State = "NY"
+            }
+        );
+
         modelBuilder.Entity<Product>().HasData(
             new Product
             {
@@ -43,20 +75,20 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
                 CategoryId = 1,
                 ImageUrl = ""
             },
-        new Product
-        {
-            Id = 2,
-            Author = "Mohammad",
-            Title ="C# in Action",
-            Description = "C# World",
-            ISBN = "1234BN9109123",
-            ListPrice = 140.0,
-            Price = 190,
-            Price100 = 170,
-            Price50 = 180,
-            CategoryId = 2,
-            ImageUrl = ""
-        },
+            new Product
+            {
+                Id = 2,
+                Author = "Mohammad",
+                Title = "C# in Action",
+                Description = "C# World",
+                ISBN = "1234BN9109123",
+                ListPrice = 140.0,
+                Price = 190,
+                Price100 = 170,
+                Price50 = 180,
+                CategoryId = 2,
+                ImageUrl = ""
+            },
             new Product
             {
                 Id = 3,
