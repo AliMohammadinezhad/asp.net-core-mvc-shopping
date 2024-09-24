@@ -13,6 +13,6 @@ public class CompanyRepository : Repository<Company>, ICompanyRepository
 
     public void Update(Company obj)
     {
-        _context.Update(obj);
+        _context.Companies.Update(obj);
     }
 }
