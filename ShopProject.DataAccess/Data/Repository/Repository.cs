@@ -28,18 +28,31 @@ public class Repository<T> : IRepository<T> where T : class
         return query.ToList();
     }
 
-    public T Get(Expression<Func<T, bool>> filter, string? includeProperties = null)
+    public T Get(Expression<Func<T, bool>> filter, string? includeProperties = null, bool tracked = false)
     {
-        IQueryable<T> query = dbSet;
-        query = query.Where(filter);
-        if (!string.IsNullOrEmpty(includeProperties))
+        IQueryable<T> query;
+
+        if (tracked)
         {
-            foreach (string property in includeProperties.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-            {
-                query = query.Include(property);
-            }
+            query = dbSet;
         }
+        else
+        {
+            query = dbSet.AsNoTracking();
+        }
+
+        query = query.Where(filter);
+            if (!string.IsNullOrEmpty(includeProperties))
+            {
+                foreach (string property in includeProperties.Split(new[] { ',' },
+                             StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(property);
+                }
+            }
+
         return query.FirstOrDefault();
+
     }
 
     public void Add(T entity)
