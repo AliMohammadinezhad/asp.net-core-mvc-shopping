@@ -1,7 +1,9 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ShopProject.DataAccess.Data.Repository.IRepository;
 using ShopProject.Models;
 using System.Diagnostics;
+using System.Security.Claims;
 
 namespace MVCProject.Areas.Customer.Controllers
 {
@@ -35,6 +37,17 @@ namespace MVCProject.Areas.Customer.Controllers
                 ProductId = (int)id
             };
             return View(cart);
+        }
+        [HttpPost]
+        [Authorize]
+        public IActionResult Details(ShoppingCart shoppingCart)
+        {
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            string userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+            shoppingCart.ApplicationUserId = userId;
+            _unitOfWork.ShoppingCart.Add(shoppingCart);
+            _unitOfWork.Save();
+            return RedirectToAction(nameof(Index));
         }
 
         public IActionResult Privacy()
