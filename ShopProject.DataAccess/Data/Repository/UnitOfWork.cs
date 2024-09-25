@@ -9,6 +9,7 @@ public class UnitOfWork : IUnitOfWork
     public IProductRepository Product { get; private set; }
     public ICompanyRepository Company { get; private set; }
     public IShoppingCartRepository ShoppingCart { get; private set; }
+    public IApplicationUserRepository ApplicationUser { get; set; }
     public UnitOfWork(ApplicationDbContext context)
     {
         _context = context;
@@ -16,6 +17,7 @@ public class UnitOfWork : IUnitOfWork
         Product = new ProductRepository(_context);
         Company = new CompanyRepository(_context);
         ShoppingCart = new ShoppingCartRepository(_context);
+        ApplicationUser = new ApplicationUserRepository(_context);
     }
 
 
