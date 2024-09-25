@@ -25,16 +25,14 @@ namespace MVCProject.Areas.Customer.Controllers
             return View(productList);
         }
 
-        public IActionResult Details(int? id)
+        [HttpGet]
+        public IActionResult Details(int productId)
         {
-            if (id == null || id == 0)
-                return NotFound();
-
             ShoppingCart cart = new()
             {
-                Product = _unitOfWork.Product.Get(u => u.Id == id, includeProperties: "Category"),
+                Product = _unitOfWork.Product.Get(u => u.Id == productId, includeProperties: nameof(Category)),
                 Count = 1,
-                ProductId = (int)id
+                ProductId = productId
             };
             return View(cart);
         }

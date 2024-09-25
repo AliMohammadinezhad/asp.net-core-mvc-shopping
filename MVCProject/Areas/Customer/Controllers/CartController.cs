@@ -29,7 +29,7 @@ namespace MVCProject.Areas.Customer.Controllers
                 ShoppingCartList = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == userId,
                     includeProperties: nameof(Product))
             };
-            return View();
+            return View(ShoppingCartVM);
         }
     }
 }
