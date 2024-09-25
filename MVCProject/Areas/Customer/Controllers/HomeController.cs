@@ -27,7 +27,7 @@ namespace MVCProject.Areas.Customer.Controllers
 
         public IActionResult Details(int? id)
         {
-            if (id == null || id == 0) 
+            if (id == null || id == 0)
                 return NotFound();
 
             ShoppingCart cart = new()
@@ -38,6 +38,7 @@ namespace MVCProject.Areas.Customer.Controllers
             };
             return View(cart);
         }
+
         [HttpPost]
         [Authorize]
         public IActionResult Details(ShoppingCart shoppingCart)
@@ -45,8 +46,25 @@ namespace MVCProject.Areas.Customer.Controllers
             var claimsIdentity = (ClaimsIdentity)User.Identity;
             string userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
             shoppingCart.ApplicationUserId = userId;
-            _unitOfWork.ShoppingCart.Add(shoppingCart);
+
+            ShoppingCart cartFromDb = _unitOfWork.ShoppingCart.Get(c =>
+                c.ApplicationUserId == userId && c.ProductId == shoppingCart.ProductId);
+
+            if (cartFromDb != null)
+            {
+                // cart is exist
+                cartFromDb.Count += shoppingCart.Count;
+                _unitOfWork.ShoppingCart.Update(cartFromDb);
+            }
+            else
+            {
+                // add cart record
+                _unitOfWork.ShoppingCart.Add(shoppingCart);
+            }
+
             _unitOfWork.Save();
+
+
             return RedirectToAction(nameof(Index));
         }
 
