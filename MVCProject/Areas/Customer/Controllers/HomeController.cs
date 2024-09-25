@@ -25,8 +25,16 @@ namespace MVCProject.Areas.Customer.Controllers
 
         public IActionResult Details(int? id)
         {
-            Product product = _unitOfWork.Product.Get(u => u.Id == id, includeProperties: "Category");
-            return View(product);
+            if (id == null || id == 0) 
+                return NotFound();
+
+            ShoppingCart cart = new()
+            {
+                Product = _unitOfWork.Product.Get(u => u.Id == id, includeProperties: "Category"),
+                Count = 1,
+                ProductId = (int)id
+            };
+            return View(cart);
         }
 
         public IActionResult Privacy()
