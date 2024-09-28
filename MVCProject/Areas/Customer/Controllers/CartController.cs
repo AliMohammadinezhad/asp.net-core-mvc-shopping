@@ -1,9 +1,14 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Dto.Payment;
+using Dto.Response.Payment;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ShopProject.DataAccess.Data.Repository.IRepository;
 using ShopProject.Models;
 using ShopProject.Models.ViewModels;
+using ShopProject.Utility;
 using System.Security.Claims;
+using ZarinPal.Class;
+using ZarinPal.Interface;
 
 namespace MVCProject.Areas.Customer.Controllers
 {
@@ -11,12 +16,19 @@ namespace MVCProject.Areas.Customer.Controllers
     //[Authorize]
     public class CartController : Controller
     {
+        private readonly Payment _payment;
+        private readonly Authority _authority;
+        private readonly Transactions _transactions;
         private readonly IUnitOfWork _unitOfWork;
-        public ShoppingCartVM ShoppingCartVM { get; set; }
+        [BindProperty] public ShoppingCartVM ShoppingCartVM { get; set; }
 
         public CartController(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
+            Expose expose = new();
+            _payment = expose.CreatePayment();
+            _authority = expose.CreateAuthority();
+            _transactions = expose.CreateTransactions();
         }
 
         public IActionResult Index()
@@ -35,6 +47,7 @@ namespace MVCProject.Areas.Customer.Controllers
                 cart.Price = GetPriceBasedOnQuantity(cart);
                 ShoppingCartVM.OrderHeader.OrderTotal += (cart.Price * cart.Count);
             }
+
             return View(ShoppingCartVM);
         }
 
@@ -66,9 +79,91 @@ namespace MVCProject.Areas.Customer.Controllers
                 cart.Price = GetPriceBasedOnQuantity(cart);
                 ShoppingCartVM.OrderHeader.OrderTotal += (cart.Price * cart.Count);
             }
+
             return View(ShoppingCartVM);
         }
 
+        [HttpPost]
+        [ActionName("Summary")]
+        public async Task<IActionResult> SummaryPost()
+        {
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            string userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+
+            ShoppingCartVM.ShoppingCartList = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == userId,
+                includeProperties: nameof(Product));
+
+
+            ShoppingCartVM.OrderHeader.OrderDate = DateTime.Now;
+            ShoppingCartVM.OrderHeader.ApplicationUserId = userId;
+
+            ApplicationUser applicationUser = _unitOfWork.ApplicationUser.Get(u => u.Id == userId);
+
+
+            foreach (ShoppingCart cart in ShoppingCartVM.ShoppingCartList)
+            {
+                cart.Price = GetPriceBasedOnQuantity(cart);
+                ShoppingCartVM.OrderHeader.OrderTotal += (cart.Price * cart.Count);
+            }
+
+            if (applicationUser.CompanyId.GetValueOrDefault() == 0)
+            {
+                // it's a regular user
+                ShoppingCartVM.OrderHeader.PaymentStatus = SD.PaymentStatusPending;
+                ShoppingCartVM.OrderHeader.OrderStatus = SD.StatusPending;
+            }
+            else
+            {
+                // it's a company user
+                ShoppingCartVM.OrderHeader.PaymentStatus = SD.PaymentStatusDelayedPayment;
+                ShoppingCartVM.OrderHeader.OrderStatus = SD.StatusApproved;
+            }
+
+            _unitOfWork.OrderHeader.Add(ShoppingCartVM.OrderHeader);
+            _unitOfWork.Save();
+
+            // create OrderDetail
+            foreach (ShoppingCart cart in ShoppingCartVM.ShoppingCartList)
+            {
+                OrderDetail orderDetail = new()
+                {
+                    ProductId = cart.ProductId,
+                    Count = cart.Count,
+                    OrderHeaderId = ShoppingCartVM.OrderHeader.Id,
+                    Price = cart.Price
+                };
+                _unitOfWork.OrderDetail.Add(orderDetail);
+                _unitOfWork.Save();
+            }
+
+            if (applicationUser.CompanyId.GetValueOrDefault() == 0)
+            {
+                // it's a regular user
+                // capture payment process
+                const string domain = "https://localhost:7014";
+                Request? result = await _payment.Request(new DtoRequest()
+                {
+                    Mobile = applicationUser.PhoneNumber,
+                    CallbackUrl = $"{domain}/cart/summary",
+                    Description = "خرید",
+                    Email = applicationUser.Email,
+                    Amount = (int)ShoppingCartVM.OrderHeader.OrderTotal,
+                    MerchantId = ""
+                }, Payment.Mode.sandbox);
+
+                return Redirect($"https://sandbox.zarinpal.com/pg/StartPay/{result.Authority}");
+            }
+
+
+
+            return RedirectToAction(nameof(OrderConfirmation), ShoppingCartVM.OrderHeader.Id);
+        }
+
+        public IActionResult OrderConfirmation(int id)
+        {
+            return View(id);
+        }
 
         public IActionResult Plus(int? cartId)
         {
