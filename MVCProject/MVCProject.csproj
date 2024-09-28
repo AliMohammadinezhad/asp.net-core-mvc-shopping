@@ -17,7 +17,9 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.5" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="TinyMCE" Version="7.3.0" />
+    <PackageReference Include="Zarinpal" Version="3.0.1" />
   </ItemGroup>
 
   <ItemGroup>
