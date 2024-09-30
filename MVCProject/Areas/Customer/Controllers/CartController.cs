@@ -2,6 +2,7 @@
 using Dto.Response.Payment;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NuGet.ProjectModel;
 using ShopProject.DataAccess.Data.Repository.IRepository;
 using ShopProject.Models;
 using ShopProject.Models.ViewModels;
@@ -164,6 +165,20 @@ namespace MVCProject.Areas.Customer.Controllers
 
         public IActionResult OrderConfirmation(int id)
         {
+            OrderHeader orderHeader =
+                _unitOfWork.OrderHeader.Get(u => u.Id == id, includeProperties: nameof(ApplicationUser));
+
+            if (orderHeader.PaymentStatus != SD.PaymentStatusDelayedPayment)
+            {
+                _unitOfWork.OrderHeader.UpdateStatus(id, SD.StatusApproved, SD.PaymentStatusApproved);
+                _unitOfWork.Save();
+                HttpContext.Session.Clear();
+            }
+
+            List<ShoppingCart> shoppingCarts =
+                _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == orderHeader.ApplicationUserId).ToList();
+            _unitOfWork.ShoppingCart.RemoveRange(shoppingCarts);
+            _unitOfWork.Save();
             return View(id);
         }
 
