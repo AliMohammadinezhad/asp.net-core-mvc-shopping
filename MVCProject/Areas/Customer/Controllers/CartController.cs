@@ -159,7 +159,6 @@ namespace MVCProject.Areas.Customer.Controllers
             }
 
 
-
             return RedirectToAction(nameof(OrderConfirmation), ShoppingCartVM.OrderHeader.Id);
         }
 
@@ -183,13 +182,21 @@ namespace MVCProject.Areas.Customer.Controllers
         {
             if (cartId == null)
                 return NotFound();
-            var cartFromDb = _unitOfWork.ShoppingCart.Get(u => u.Id == cartId);
+            var cartFromDb = _unitOfWork.ShoppingCart.Get(u => u.Id == cartId, tracked:true);
 
             if (cartFromDb.Count <= 1)
+            {
+                HttpContext.Session.SetInt32(SD.SessionCart,
+                    _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == cartFromDb.ApplicationUserId).Count() -
+                    1);
                 _unitOfWork.ShoppingCart.Remove(cartFromDb);
+            }
+            else
+            {
+                cartFromDb.Count -= 1;
+                _unitOfWork.ShoppingCart.Update(cartFromDb);
+            }
 
-            cartFromDb.Count -= 1;
-            _unitOfWork.ShoppingCart.Update(cartFromDb);
             _unitOfWork.Save();
             return RedirectToAction(nameof(Index));
         }
@@ -198,7 +205,9 @@ namespace MVCProject.Areas.Customer.Controllers
         {
             if (cartId == null)
                 return NotFound();
-            var cartFromDb = _unitOfWork.ShoppingCart.Get(u => u.Id == cartId);
+            var cartFromDb = _unitOfWork.ShoppingCart.Get(u => u.Id == cartId, tracked:true);
+            HttpContext.Session.SetInt32(SD.SessionCart,
+                _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == cartFromDb.ApplicationUserId).Count() - 1);
             _unitOfWork.ShoppingCart.Remove(cartFromDb);
             _unitOfWork.Save();
             return RedirectToAction(nameof(Index));

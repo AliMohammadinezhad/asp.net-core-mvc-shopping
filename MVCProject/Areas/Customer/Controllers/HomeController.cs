@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ShopProject.DataAccess.Data.Repository.IRepository;
 using ShopProject.Models;
+using ShopProject.Utility;
 using System.Diagnostics;
 using System.Security.Claims;
 
@@ -21,6 +22,15 @@ namespace MVCProject.Areas.Customer.Controllers
 
         public IActionResult Index()
         {
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            Claim? claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+
+            if (claim?.Value != null)
+            {
+                HttpContext.Session.SetInt32(SD.SessionCart,
+                    _unitOfWork.ShoppingCart.GetAll(c => c.ApplicationUserId == claim.Value).Count());
+            }
+
             IEnumerable<Product> productList = _unitOfWork.Product.GetAll(includeProperties: "Category");
             return View(productList);
         }
@@ -53,14 +63,18 @@ namespace MVCProject.Areas.Customer.Controllers
                 // cart is exist
                 cartFromDb.Count += shoppingCart.Count;
                 _unitOfWork.ShoppingCart.Update(cartFromDb);
+                _unitOfWork.Save();
             }
             else
             {
                 // add cart record
                 _unitOfWork.ShoppingCart.Add(shoppingCart);
+                _unitOfWork.Save();
+                HttpContext.Session.SetInt32(SD.SessionCart,
+                    _unitOfWork.ShoppingCart.GetAll(c => c.ApplicationUserId == userId).Count());
             }
 
-            _unitOfWork.Save();
+
             TempData["success"] = "Cart Updated Successfully";
 
             return RedirectToAction(nameof(Index));
