@@ -13,7 +13,7 @@ using ZarinPal.Interface;
 namespace MVCProject.Areas.Customer.Controllers
 {
     [Area("Customer")]
-    //[Authorize]
+    [Authorize]
     public class CartController : Controller
     {
         private readonly Payment _payment;
@@ -141,18 +141,21 @@ namespace MVCProject.Areas.Customer.Controllers
             {
                 // it's a regular user
                 // capture payment process
-                const string domain = "https://localhost:7014";
-                Request? result = await _payment.Request(new DtoRequest()
-                {
-                    Mobile = applicationUser.PhoneNumber,
-                    CallbackUrl = $"{domain}/cart/summary",
-                    Description = "خرید",
-                    Email = applicationUser.Email,
-                    Amount = (int)ShoppingCartVM.OrderHeader.OrderTotal,
-                    MerchantId = ""
-                }, Payment.Mode.sandbox);
+                //const string domain = "https://localhost:7014";
+                //Request? result = await _payment.Request(new DtoRequest()
+                //{
+                //    Mobile = applicationUser.PhoneNumber,
+                //    CallbackUrl = $"{domain}/cart/summary",
+                //    Description = "خرید",
+                //    Email = applicationUser.Email,
+                //    Amount = (int)ShoppingCartVM.OrderHeader.OrderTotal,
+                //    MerchantId = ""
+                //}, Payment.Mode.sandbox);
 
-                return Redirect($"https://sandbox.zarinpal.com/pg/StartPay/{result.Authority}");
+                //return Redirect($"https://sandbox.zarinpal.com/pg/StartPay/{result.Authority}");
+
+                _unitOfWork.OrderHeader.UpdateStatus(ShoppingCartVM.OrderHeader.Id, SD.StatusApproved);
+                _unitOfWork.Save();
             }
 
 
