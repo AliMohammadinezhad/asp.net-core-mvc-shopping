@@ -160,7 +160,7 @@ namespace MVCProject.Areas.Customer.Controllers
             }
 
 
-            return RedirectToAction(nameof(OrderConfirmation), ShoppingCartVM.OrderHeader.Id);
+            return RedirectToAction(nameof(OrderConfirmation), new{id = ShoppingCartVM.OrderHeader.Id });
         }
 
         public IActionResult OrderConfirmation(int id)
