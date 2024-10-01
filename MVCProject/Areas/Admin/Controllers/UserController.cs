@@ -44,10 +44,27 @@ public class UserController : Controller
         return Json(new { data = objApplicationUsers });
     }
 
-    [HttpDelete]
-    public IActionResult Delete(int? id)
+    [HttpPost]
+    public IActionResult LockUnlock([FromBody]string id)
     {
-        return Json(new { success = true, message = "Delete Successful" });
+        var objFromDatabase = _context.ApplicationUsers.FirstOrDefault(u => u.Id == id);
+        if (objFromDatabase == null)
+        {
+            return Json(new { success = true, message = "Error While Locking/Unlocking" });
+        }
+
+        if (objFromDatabase.LockoutEnd != null && objFromDatabase.LockoutEnd > DateTime.Now)
+        {
+            // user is currently locked and we want to unlock them
+            objFromDatabase.LockoutEnd = DateTime.Now;
+        }
+        else
+        {
+            objFromDatabase.LockoutEnd = DateTime.Now.AddYears(1000);
+        }
+
+        _context.SaveChanges();
+        return Json(new { success = true, message = "Operation Successful" });
     }
 
     #endregion
