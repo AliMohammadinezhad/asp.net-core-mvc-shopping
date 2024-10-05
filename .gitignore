@@ -361,5 +361,5 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
-/MVCProject/wwwroot/images/product
+/MVCProject/wwwroot/images/
 /MVCCourse/MVCProject/wwwroot/lib/tinymce/
