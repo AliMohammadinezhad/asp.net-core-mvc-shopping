@@ -29,7 +29,7 @@
                             <div class="d-none d-lg-block col-lg-1 text-center py-2">
                                 @if (item.Product.ProductImages.Any())
                                 {
-                                    <img src="@item.Product.ProductImages.First().ImageUrl" class="card card-img-top rounded w-100" />
+                                    <img src="@item.Product.ProductImages.FirstOrDefault().ImageUrl" class="card card-img-top rounded w-100" />
                                 }
                                 else
                                 {
