@@ -18,6 +18,7 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
     public DbSet<OrderHeader> OrderHeaders { get; set; }
     public DbSet<OrderDetail> OrderDetails { get; set; }
     public DbSet<ApplicationUser> ApplicationUsers { get; set; }
+    public DbSet<ProductImage> ProductImages { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -75,8 +76,7 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
                 Price = 90,
                 Price100 = 70,
                 Price50 = 80,
-                CategoryId = 1,
-                ImageUrl = ""
+                CategoryId = 1
             },
             new Product
             {
@@ -85,12 +85,11 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
                 Title = "C# in Action",
                 Description = "C# World",
                 ISBN = "1234BN9109123",
-                ListPrice = 140.0,
+                ListPrice = 200.0,
                 Price = 190,
                 Price100 = 170,
                 Price50 = 180,
-                CategoryId = 2,
-                ImageUrl = ""
+                CategoryId = 2
             },
             new Product
             {
@@ -99,12 +98,11 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
                 Title = ".NET in action",
                 Description = ".NET in real world",
                 ISBN = "1234DF23G3",
-                ListPrice = 303.0,
+                ListPrice = .0,
                 Price = 70,
                 Price100 = 50,
                 Price50 = 60,
-                CategoryId = 3,
-                ImageUrl = ""
+                CategoryId = 3
             });
     }
 }

@@ -68,20 +68,20 @@ namespace MVCProject.Areas.Admin.Controllers
                 {
                     string fileName = Guid.NewGuid() + Path.GetExtension(file.FileName);
                     string productPath = Path.Combine(wwwrootPath, @"images\product");
-                    if (!string.IsNullOrEmpty(obj.Product.ImageUrl))
-                    {
-                        // delete the old image
-                        var oldImagePath = Path.Combine(wwwrootPath, obj.Product.ImageUrl.TrimStart('\\'));
-                        if (System.IO.File.Exists(oldImagePath))
-                            System.IO.File.Delete(oldImagePath);
-                    }
+                    //if (!string.IsNullOrEmpty(obj.Product.ImageUrl))
+                    //{
+                    //    // delete the old image
+                    //    var oldImagePath = Path.Combine(wwwrootPath, obj.Product.ImageUrl.TrimStart('\\'));
+                    //    if (System.IO.File.Exists(oldImagePath))
+                    //        System.IO.File.Delete(oldImagePath);
+                    //}
                     
-                    using (var fileStream = new FileStream(Path.Combine(productPath,fileName), FileMode.Create))
-                    {
-                        file.CopyTo(fileStream);
-                    }
+                    //using (var fileStream = new FileStream(Path.Combine(productPath,fileName), FileMode.Create))
+                    //{
+                    //    file.CopyTo(fileStream);
+                    //}
 
-                    obj.Product.ImageUrl = @"\images\product\" + fileName;
+                    //obj.Product.ImageUrl = @"\images\product\" + fileName;
                 }
 
                 if (obj.Product.Id == 0)
@@ -124,10 +124,10 @@ namespace MVCProject.Areas.Admin.Controllers
             if (product == null)
                 return Json(new { success = false, message = "error while deleting" });
 
-            string wwwrootPath = _webHostEnvironment.WebRootPath;
-            var oldImagePath = Path.Combine(wwwrootPath, product.ImageUrl.TrimStart('\\'));
-            if (System.IO.File.Exists(oldImagePath))
-                System.IO.File.Delete(oldImagePath);
+            //string wwwrootPath = _webHostEnvironment.WebRootPath;
+            //var oldImagePath = Path.Combine(wwwrootPath, product.ImageUrl.TrimStart('\\'));
+            //if (System.IO.File.Exists(oldImagePath))
+            //    System.IO.File.Delete(oldImagePath);
 
 
             _unitOfWork.Product.Remove(product);
